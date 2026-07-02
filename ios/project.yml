@@ -22,6 +22,9 @@ targets:
         UILaunchScreen: {}
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
+        NSLocationWhenInUseUsageDescription: >-
+          Road Trip Trivia uses your location to notice when the car has
+          stopped, so it can offer to pause the game for a rest stop.
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.roadtriptrivia.app

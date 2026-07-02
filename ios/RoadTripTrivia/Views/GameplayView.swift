@@ -46,6 +46,12 @@ struct GameplayView: View {
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
+            if coordinator.motionSuggestion == .resume {
+                motionBanner(
+                    message: "Looks like you're moving again — resume the game?",
+                    actionTitle: "Resume"
+                )
+            }
             Button {
                 Task { await coordinator.resumeGame() }
             } label: {
@@ -108,6 +114,37 @@ struct GameplayView: View {
         .onAppear { resetForCurrentQuestion() }
         .onChange(of: session.currentQuestionIndex) { _, _ in resetForCurrentQuestion() }
         .onReceive(timer) { _ in tick() }
+        .safeAreaInset(edge: .bottom) {
+            if coordinator.motionSuggestion == .pause {
+                motionBanner(
+                    message: "Looks like you've stopped — pause for a rest stop?",
+                    actionTitle: "Pause"
+                )
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func motionBanner(message: String, actionTitle: String) -> some View {
+        HStack(spacing: 12) {
+            Text(message)
+                .font(.footnote)
+                .multilineTextAlignment(.leading)
+            Spacer()
+            Button("Not now") {
+                coordinator.dismissMotionSuggestion()
+            }
+            .font(.footnote)
+            Button(actionTitle) {
+                Task { await coordinator.acceptMotionSuggestion() }
+            }
+            .buttonStyle(.borderedProminent)
+            .controlSize(.small)
+        }
+        .padding(12)
+        .background(RoundedRectangle(cornerRadius: 12).fill(.secondary.opacity(0.12)))
+        .padding(.horizontal, 16)
+        .padding(.bottom, 8)
     }
 
     @ViewBuilder

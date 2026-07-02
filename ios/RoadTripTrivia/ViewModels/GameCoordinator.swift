@@ -1,5 +1,10 @@
 import Foundation
 
+enum MotionSuggestion {
+    case pause
+    case resume
+}
+
 /// Owns the current game's identity (code + this device's playerId) and
 /// the realtime session observer. One instance lives for the app's
 /// lifetime and is handed down via the environment.
@@ -9,11 +14,21 @@ final class GameCoordinator: ObservableObject {
     @Published var playerId: String?
     @Published var isLoading = false
     @Published var errorMessage: String?
+    @Published private(set) var motionSuggestion: MotionSuggestion?
 
     let observer = GameSessionObserver()
 
     private let client = FirebaseClient.shared
     private let localStore = LocalPlayerStore.shared
+    private let restStopDetector = RestStopDetector()
+
+    init() {
+        restStopDetector.onMotionChange = { [weak self] state in
+            Task { @MainActor in
+                self?.handleMotionChange(state)
+            }
+        }
+    }
 
     var isHost: Bool {
         guard let session = observer.session, let playerId else { return false }
@@ -100,8 +115,42 @@ final class GameCoordinator: ObservableObject {
         }
     }
 
+    /// Acts on the current auto-detected pause/resume nudge (see
+    /// RestStopDetector) by going through the same manual pause/resume path.
+    func acceptMotionSuggestion() async {
+        switch motionSuggestion {
+        case .pause:
+            await pauseGame()
+        case .resume:
+            await resumeGame()
+        case nil:
+            break
+        }
+        motionSuggestion = nil
+    }
+
+    /// Dismisses the nudge without acting. It won't reappear until the car
+    /// cycles through the opposite motion state and back, since
+    /// RestStopDetector only reports on a debounced transition.
+    func dismissMotionSuggestion() {
+        motionSuggestion = nil
+    }
+
+    private func handleMotionChange(_ state: MotionState) {
+        switch (state, observer.session?.status) {
+        case (.stopped, .active):
+            motionSuggestion = .pause
+        case (.moving, .paused):
+            motionSuggestion = .resume
+        default:
+            motionSuggestion = nil
+        }
+    }
+
     func leaveGame() {
         observer.stop()
+        restStopDetector.stop()
+        motionSuggestion = nil
         gameCode = nil
         playerId = nil
         localStore.clearLastGameCode()
@@ -112,5 +161,6 @@ final class GameCoordinator: ObservableObject {
         self.playerId = playerId
         localStore.lastGameCode = gameCode
         observer.start(gameCode: gameCode)
+        restStopDetector.start()
     }
 }
