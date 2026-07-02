@@ -3,6 +3,10 @@
     "xcodebuildmcp": {
       "command": "npx",
       "args": ["-y", "xcodebuildmcp@latest", "mcp"]
+    },
+    "firebase": {
+      "command": "firebase",
+      "args": ["mcp", "--dir", "/Users/craigburger/roadtrip-trivia/backend"]
     }
   }
 }
