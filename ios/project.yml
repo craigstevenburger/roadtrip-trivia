@@ -1,0 +1,39 @@
+name: RoadTripTrivia
+options:
+  bundleIdPrefix: com.roadtriptrivia
+  deploymentTarget:
+    iOS: "16.0"
+  createIntermediateGroups: true
+
+packages:
+  FirebaseSDK:
+    url: https://github.com/firebase/firebase-ios-sdk
+    from: 11.0.0
+
+targets:
+  RoadTripTrivia:
+    type: application
+    platform: iOS
+    sources:
+      - path: RoadTripTrivia
+    info:
+      path: RoadTripTrivia/Info.plist
+      properties:
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.roadtriptrivia.app
+        SWIFT_VERSION: 5.0
+        TARGETED_DEVICE_FAMILY: 1
+        ENABLE_PREVIEWS: YES
+    dependencies:
+      - package: FirebaseSDK
+        product: FirebaseCore
+      - package: FirebaseSDK
+        product: FirebaseAuth
+      - package: FirebaseSDK
+        product: FirebaseFirestore
+      - package: FirebaseSDK
+        product: FirebaseFunctions

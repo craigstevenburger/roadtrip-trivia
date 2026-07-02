@@ -1,0 +1,19 @@
+rules_version = '2';
+
+// All game-state writes go through Cloud Functions (server-validated
+// difficulty/scoring/turn logic — see docs/api-contract.md), which use the
+// Admin SDK and therefore bypass these rules entirely. Clients only ever
+// get read-only realtime listeners here, scoped to games they've joined.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /games/{gameCode} {
+      allow read: if request.auth != null && request.auth.uid in resource.data.players;
+      allow write: if false;
+    }
+
+    // Internal OpenTDB session-token cache — Cloud Functions (Admin SDK) only.
+    match /config/{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
