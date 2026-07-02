@@ -112,7 +112,7 @@ struct GameplayView: View {
         }
         .padding(.top)
         .onAppear { resetForCurrentQuestion() }
-        .onChange(of: session.currentQuestionIndex) { _, _ in resetForCurrentQuestion() }
+        .onChange(of: session.currentQuestionIndex) { _ in resetForCurrentQuestion() }
         .onReceive(timer) { _ in tick() }
         .safeAreaInset(edge: .bottom) {
             if coordinator.motionSuggestion == .pause {

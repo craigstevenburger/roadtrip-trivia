@@ -32,7 +32,7 @@ struct RootView: View {
             displayName = LocalPlayerStore.shared.displayName
             age = LocalPlayerStore.shared.age
             Task {
-                await FirebaseClient.shared.ensureSignedIn()
+                _ = try? await FirebaseClient.shared.ensureSignedIn()
                 coordinator.rejoinCachedGameIfAvailable()
             }
         }
