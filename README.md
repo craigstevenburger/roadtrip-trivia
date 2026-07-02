@@ -9,8 +9,12 @@ backend contract and the plan this was built from for architecture context.
 
 **Status:** Phases 0–2 are implemented — Firebase backend, iPhone age gate /
 create / join / lobby, and a phone-only (tap-to-answer) gameplay loop end to
-end. CarPlay's voice-only driver experience (Phase 3), permissions, rest-stop
-polish, ads, and branding assets are next — see "What's not built yet" below.
+end. Phase 4's rest-stop auto-detection is also in: with location
+permission granted, the app notices via CoreLocation when the car has been
+stopped or moving for a sustained stretch and offers to pause/resume,
+alongside the existing manual pause/resume. CarPlay's voice-only driver
+experience (Phase 3), ads, and branding assets are next — see "What's not
+built yet" below.
 
 ## Repo layout
 
@@ -89,13 +93,11 @@ Following the phased plan in order:
 
 - **Phase 3 — CarPlay.** `CPNowPlayingTemplate` scene, `AVSpeechSynthesizer`
   question narration, `SFSpeechRecognizer` capture of the driver's spoken
-  answer. Deliberately not started yet — flagged for a check-in before
-  building, since it's the highest-uncertainty piece (Apple's CarPlay Audio
-  App entitlement approval).
-- **Phase 4 — Permissions + rest-stop auto-detection.** Mic/Speech usage
-  strings, CoreLocation "when in use" as a secondary signal for offering an
-  automatic pause. Manual pause/resume (the Cloud Functions and phone UI
-  for it) already works.
+  answer, plus the Mic/Speech Info.plist usage strings those need (held
+  off on adding those until there's actual code behind them). Deliberately
+  not started yet — flagged for a check-in before building, since it's the
+  highest-uncertainty piece (Apple's CarPlay Audio App entitlement
+  approval).
 - **Phase 5 — Ads (AdMob banners, phone screens only).**
 - **Phase 6 — Logo + splash screen audio sequencing.**
 - **Phase 7 — Apple CarPlay entitlement request + App Store submission.**
