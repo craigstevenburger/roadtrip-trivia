@@ -12,9 +12,12 @@ create / join / lobby, and a phone-only (tap-to-answer) gameplay loop end to
 end. Phase 4's rest-stop auto-detection is also in: with location
 permission granted, the app notices via CoreLocation when the car has been
 stopped or moving for a sustained stretch and offers to pause/resume,
-alongside the existing manual pause/resume. CarPlay's voice-only driver
-experience (Phase 3), ads, and branding assets are next — see "What's not
-built yet" below.
+alongside the existing manual pause/resume. Phase 3 (CarPlay) is underway:
+the CarPlay scene connects, declares the device as driver, and reflects
+live game state (lobby / active question / paused / completed) on the Now
+Playing template — voice narration and spoken-answer capture are a
+follow-up pass. Ads and branding assets are next — see "What's not built
+yet" below.
 
 ## Repo layout
 
@@ -25,7 +28,8 @@ docs/
   api-contract.md    Firestore schema + Cloud Function contract (read this first)
 ios/                 SwiftUI iPhone app (XcodeGen project — see below)
   project.yml         XcodeGen spec; generates the .xcodeproj (not committed)
-  RoadTripTrivia/      App source
+  RoadTripTrivia/      App source (incl. CarPlay/ scene delegate + display)
+  RoadTripTriviaTests/ XCTest target — currently covers pure logic only
 assets/              Logo/branding source files (not yet populated)
 ```
 
@@ -62,11 +66,18 @@ For local iteration without touching production OpenTDB quota:
 cd backend/functions && npm run serve   # Firestore + Functions emulators
 ```
 
+Tests (currently `src/difficulty.ts` — age tiers, scoring, the
+difficulty-mix rounding table):
+
+```bash
+cd backend/functions && npm test   # jest
+```
+
 ## iOS app setup
 
-This environment doesn't have full Xcode installed (only Command Line
-Tools), so the project is authored as an [XcodeGen](https://github.com/yonaskolb/XcodeGen)
-spec rather than a committed `.xcodeproj` — regenerate it locally:
+The project is authored as an [XcodeGen](https://github.com/yonaskolb/XcodeGen)
+spec rather than a committed `.xcodeproj` (see `ios/project.yml`) —
+regenerate it locally after cloning, and after any `project.yml` change:
 
 ```bash
 brew install xcodegen
@@ -87,17 +98,21 @@ To test multiplayer locally, run the app on two Simulator instances (or a
 Simulator + a physical device) — one starts a game, the other joins with
 the generated code.
 
+Unit tests (`RoadTripTriviaTests`, currently pure logic only — e.g.
+`RestStopDetector`'s motion-debounce state machine) run via the
+`RoadTripTrivia` scheme's Test action (Xcode: Cmd+U).
+
 ## What's not built yet
 
 Following the phased plan in order:
 
-- **Phase 3 — CarPlay.** `CPNowPlayingTemplate` scene, `AVSpeechSynthesizer`
-  question narration, `SFSpeechRecognizer` capture of the driver's spoken
+- **Phase 3 — CarPlay, remaining work.** The scene itself is connected
+  (see Status above); still to build: `AVSpeechSynthesizer` question
+  narration and `SFSpeechRecognizer` capture of the driver's spoken
   answer, plus the Mic/Speech Info.plist usage strings those need (held
-  off on adding those until there's actual code behind them). Deliberately
-  not started yet — flagged for a check-in before building, since it's the
-  highest-uncertainty piece (Apple's CarPlay Audio App entitlement
-  approval).
+  off on adding those until there's actual code behind them). The real
+  Apple-granted CarPlay entitlement is separately Phase 7 — today's build
+  only works in Xcode's CarPlay Simulator.
 - **Phase 5 — Ads (AdMob banners, phone screens only).**
 - **Phase 6 — Logo + splash screen audio sequencing.**
 - **Phase 7 — Apple CarPlay entitlement request + App Store submission.**
