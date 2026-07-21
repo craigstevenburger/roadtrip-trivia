@@ -76,8 +76,10 @@ final class RestStopDetector: NSObject, CLLocationManagerDelegate {
 }
 
 /// Pure state machine over (speed, timestamp) samples — kept separate from
-/// CLLocationManager so it's testable without a live location source.
-private final class MotionClassifier {
+/// CLLocationManager so it's testable without a live location source (see
+/// RoadTripTriviaTests/MotionClassifierTests.swift). Internal, not
+/// private, so the test target can see it via @testable import.
+final class MotionClassifier {
     private enum Classification: Equatable {
         case stopped
         case moving

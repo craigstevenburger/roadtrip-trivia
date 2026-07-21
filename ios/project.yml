@@ -52,3 +52,25 @@ targets:
         product: FirebaseFirestore
       - package: FirebaseSDK
         product: FirebaseFunctions
+
+  RoadTripTriviaTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: RoadTripTriviaTests
+    settings:
+      base:
+        SWIFT_VERSION: 5.0
+        GENERATE_INFOPLIST_FILE: YES
+    dependencies:
+      - target: RoadTripTrivia
+
+schemes:
+  RoadTripTrivia:
+    build:
+      targets:
+        RoadTripTrivia: all
+        RoadTripTriviaTests: [test]
+    test:
+      targets:
+        - RoadTripTriviaTests
