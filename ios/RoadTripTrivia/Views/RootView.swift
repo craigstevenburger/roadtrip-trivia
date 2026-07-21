@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct RootView: View {
-    @StateObject private var coordinator = GameCoordinator()
+    @StateObject private var coordinator = GameCoordinator.shared
     @State private var displayName: String?
     @State private var age: Int?
 

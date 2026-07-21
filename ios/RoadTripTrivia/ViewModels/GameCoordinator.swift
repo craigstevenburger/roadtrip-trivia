@@ -10,6 +10,11 @@ enum MotionSuggestion {
 /// lifetime and is handed down via the environment.
 @MainActor
 final class GameCoordinator: ObservableObject {
+    /// Shared across the phone's WindowGroup scene and the CarPlay scene
+    /// (same process, same anonymous-auth uid) so both surfaces reflect
+    /// the same joined game — see CarPlay/CarPlayGameDisplay.swift.
+    static let shared = GameCoordinator()
+
     @Published var gameCode: String?
     @Published var playerId: String?
     @Published var isLoading = false
@@ -113,6 +118,15 @@ final class GameCoordinator: ObservableObject {
         } catch {
             errorMessage = error.localizedDescription
         }
+    }
+
+    /// Self-declares this device as the driver (fired when the CarPlay
+    /// scene connects — see CarPlay/CarPlayGameDisplay.swift). Silently
+    /// no-ops without a game attached; this is a nudge, not a blocking
+    /// requirement, same philosophy as RestStopDetector.
+    func becomeDriver() async {
+        guard let gameCode else { return }
+        try? await client.setDriver(gameCode: gameCode)
     }
 
     /// Acts on the current auto-detected pause/resume nudge (see

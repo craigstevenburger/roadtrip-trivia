@@ -25,6 +25,18 @@ targets:
         NSLocationWhenInUseUsageDescription: >-
           Road Trip Trivia uses your location to notice when the car has
           stopped, so it can offer to pause the game for a rest stop.
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: true
+          UISceneConfigurations:
+            UIWindowSceneSessionRoleApplication:
+              - UISceneConfigurationName: "Default Configuration"
+            CPTemplateApplicationSceneSessionRoleApplication:
+              - UISceneConfigurationName: "CarPlay Configuration"
+                UISceneDelegateClassName: "$(PRODUCT_MODULE_NAME).CarPlaySceneDelegate"
+    entitlements:
+      path: RoadTripTrivia/RoadTripTrivia.entitlements
+      properties:
+        com.apple.developer.carplay-audio: true
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.roadtriptrivia.app

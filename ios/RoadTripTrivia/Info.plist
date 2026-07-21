@@ -20,6 +20,30 @@
 	<string>1</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Road Trip Trivia uses your location to notice when the car has stopped, so it can offer to pause the game for a rest stop.</string>
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<true/>
+		<key>UISceneConfigurations</key>
+		<dict>
+			<key>UIWindowSceneSessionRoleApplication</key>
+			<array>
+				<dict>
+					<key>UISceneConfigurationName</key>
+					<string>Default Configuration</string>
+				</dict>
+			</array>
+			<key>CPTemplateApplicationSceneSessionRoleApplication</key>
+			<array>
+				<dict>
+					<key>UISceneConfigurationName</key>
+					<string>CarPlay Configuration</string>
+					<key>UISceneDelegateClassName</key>
+					<string>$(PRODUCT_MODULE_NAME).CarPlaySceneDelegate</string>
+				</dict>
+			</array>
+		</dict>
+	</dict>
 	<key>UILaunchScreen</key>
 	<dict/>
 	<key>UISupportedInterfaceOrientations</key>
